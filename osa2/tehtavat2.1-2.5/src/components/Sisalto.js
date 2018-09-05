@@ -4,7 +4,7 @@ import Osa from './Osa'
 const Sisalto = ({kurssi}) => {
     return(
       <div>
-        {kurssi.map(kurs => <Osa key={kurs.id} kurs={kurs} />)}
+        {kurssi.map(course => <Osa key={course.id} course={course} />)}
       </div>
     )
   }

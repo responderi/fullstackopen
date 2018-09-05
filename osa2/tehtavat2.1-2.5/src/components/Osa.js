@@ -1,5 +1,5 @@
 import React from 'react'
 
-const Osa = ({kurs}) => <p>{kurs.nimi} {kurs.tehtavia}</p>
+const Osa = ({course}) => <p>{course.nimi} {course.tehtavia}</p>
 
 export default Osa
