@@ -2,7 +2,7 @@ import React from 'react';
 import ListPersons from './components/ListPersons'
 import AddPerson from './components/AddPerson'
 import Filter from './components/Filter'
-import axios from 'axios'
+import personService from './services/persons'
 
 class App extends React.Component {
   constructor(props) {
@@ -11,15 +11,16 @@ class App extends React.Component {
       persons: [],
       newName: '',
       newNumber: '',
-      filter: ''
+      filter: '',
+      error: null
     }
   }
 
   componentDidMount() {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => {
-        this.setState({ persons: res.data })
+    personService
+      .getPersons()
+      .then(persons => {
+        this.setState({ persons })
       })
   }
 
@@ -32,19 +33,43 @@ class App extends React.Component {
 
     const searchPerson = this.state.persons.find(person => person.name === this.state.newName)
     if (!searchPerson) {
-      const persons = this.state.persons.concat(personObject)
-      this.setState({
-        persons,
-        newName: '',
-        newNumber: ''
-      })
+      personService
+        .create(personObject)
+        .then(newPerson => {
+          this.setState({
+            persons: this.state.persons.concat(newPerson),
+            newName: '',
+            newNumber: ''
+          })
+        })
     } else {
       alert('Tämä nimi on jo olemassa!')
       this.setState({
         newName: ''
       })
     }
+  }
 
+  deletePerson = (id) => {
+    return () => {
+      const personDelete = this.state.persons.find(personId => personId.id === id)
+      
+      if(window.confirm('poistetaanko '+personDelete.name+'')) {
+        personService
+          .remove(personDelete.id)
+          .then(response => {
+            this.setState({
+              persons: this.state.persons.filter(person=>person !== personDelete),
+              newName: '',
+              newNumber: ''
+            })
+            console.log('poistettu')
+          })
+          .catch(error => {
+            console.log('poistaminen epäonnistui')
+          })
+      }
+    }
   }
 
   handleNameChange = (event) => {
@@ -68,9 +93,10 @@ class App extends React.Component {
     return (
       <div>
         <h2>Puhelinluettelo</h2>
+        <Notification message={this.state.error} />
         <Filter status={this.state.filter} change={this.handleFilterChange} />
         <AddPerson statusName={this.state.name} statusNumber={this.state.number} changeName={this.handleNameChange} changeNumber={this.handleNumberChange} add={this.addPerson} />
-        <ListPersons persons={personsToShow} />
+        <ListPersons persons={personsToShow} deletePerson={this.deletePerson} />
       </div>
     )
   }
