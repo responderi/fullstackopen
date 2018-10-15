@@ -3,6 +3,7 @@ import ListPersons from './components/ListPersons'
 import AddPerson from './components/AddPerson'
 import Filter from './components/Filter'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 class App extends React.Component {
   constructor(props) {
@@ -39,8 +40,13 @@ class App extends React.Component {
           this.setState({
             persons: this.state.persons.concat(newPerson),
             newName: '',
-            newNumber: ''
+            newNumber: '',
+            error: `lisättiin ${personObject.name}`
           })
+          setTimeout(() => {
+            this.setState({error: null})
+          }, 5000)
+
         })
     } else {
       alert('Tämä nimi on jo olemassa!')
@@ -61,9 +67,13 @@ class App extends React.Component {
             this.setState({
               persons: this.state.persons.filter(person=>person !== personDelete),
               newName: '',
-              newNumber: ''
+              newNumber: '',
+              error: `${personDelete.name} poistettiin onnistuneesti`
             })
             console.log('poistettu')
+            setTimeout(() => {
+              this.setState({error: null})
+            }, 5000)  
           })
           .catch(error => {
             console.log('poistaminen epäonnistui')
