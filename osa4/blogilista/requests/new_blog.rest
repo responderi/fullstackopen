@@ -2,5 +2,5 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "ZAaihe", "author": "ZAtekijä", "url": "ZAlinkki", "likes": 0
+  "title": "Moduloitu aihe", "author": "Moduloitu tekijä", "url": "Moduloitu url", "likes": 0
 }
